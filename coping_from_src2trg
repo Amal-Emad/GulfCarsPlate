@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Aug  4 20:37:33 2024
+
+@author: amal-alkraimeen
+"""
+#------------------------------------------------------------------------------------------
+#This script is  to copy a sample of 100 image files and their  label files from a source directory to  target directories.
+#because i annotate about 3000 pic so i need to take sample just to try the process 
+#------------------------------------------------------------------------------------------
+
+
+
+import os
+import shutil
+
+
+src_dir = '/home/amal-alkraimeen/Desktop/Amal'
+
+
+trg_img_dir = '/home/amal-alkraimeen/Desktop/CAR&PLATE/car&plate_code/samples/trg_sample_img'
+trg_lbl_dir = '/home/amal-alkraimeen/Desktop/CAR&PLATE/car&plate_code/samples/trg_sample_label'
+os.makedirs(trg_img_dir, exist_ok=True)
+os.makedirs(trg_lbl_dir, exist_ok=True)
+
+
+all_files = os.listdir(src_dir)
+
+#Split into images and labels
+img_extensions = ['.png', '.jpg']
+label_extensions = ['.txt', '.yolo']
+
+img_files = [file for file in all_files if os.path.splitext(file)[1].lower() in img_extensions]
+label_files = [file for file in all_files if os.path.splitext(file)[1].lower() in label_extensions]
+
+#sample of 100 image files and their label files
+sample_img_files = img_files[:100]
+
+
+for img_file in sample_img_files:
+    
+    src_img_path = os.path.join(src_dir, img_file)
+    trg_img_path = os.path.join(trg_img_dir, img_file)
+    
+    # Copy image 
+    shutil.copy2(src_img_path, trg_img_path)
+    
+    base_name = os.path.splitext(img_file)[0]
+    
+    
+    # Copy label 
+    for ext in label_extensions:
+        lbl_file = base_name + ext
+        src_lbl_path = os.path.join(src_dir, lbl_file)
+        if os.path.exists(src_lbl_path):
+            trg_lbl_path = os.path.join(trg_lbl_dir, lbl_file)
+            shutil.copy2(src_lbl_path, trg_lbl_path)
+
+print(f"Copied {len(os.listdir(trg_img_dir))} image files and corresponding label files.")
